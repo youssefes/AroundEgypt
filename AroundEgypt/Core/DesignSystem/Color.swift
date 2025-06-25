@@ -15,10 +15,11 @@ extension DesignSystem {
         case background = "background"
         case searchBackground = "searchBackground"
         case description = "description"
-        case title = "titleOfInput"
+        case title = "title"
+        case subtitle = "subtitle"
         var color: Color {
             switch self {
-            case .main,.background ,.searchBackground,.description,.title:
+            case .main,.background ,.searchBackground,.description,.title, .subtitle:
                 return Color(self.rawValue)
             }
         }

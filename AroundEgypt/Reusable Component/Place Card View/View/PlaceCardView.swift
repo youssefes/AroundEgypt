@@ -14,14 +14,25 @@ struct PlaceCardModel {
     var seenNumber: Int
     var likeCount: Int
     var isRecommended: Bool = false
+    var isliked: Bool = false
+    var address: String
+    var description: String
 }
 
 struct PlaceCardView: View {
     var placeCardModel: PlaceCardModel
     var width: CGFloat?
+    @State var showExperienceScreen: Bool = false
+    @StateObject var viewModel: PlaceCardViewModel
+    init(placeCardModel: PlaceCardModel, width: CGFloat? = nil) {
+        self.placeCardModel = placeCardModel
+        self.width = width
+        _viewModel = StateObject(wrappedValue: PlaceCardViewModel(placeCardModel: placeCardModel))
+    }
+    
     var body: some View {
         VStack(spacing: Dimensions.d16) {
-            AsyncImageView(url: URL(string: placeCardModel.image)!)
+            AsyncImageView(url: URL(string: viewModel.placeCardModel.image))
                 .frame(width: width,height: Dimensions.d155)
                 .frame(maxWidth: width ?? .infinity)
                 .cornerRadius(Dimensions.d7)
@@ -31,16 +42,31 @@ struct PlaceCardView: View {
             
             nameWithlikeCount
         }
+        .onTapGesture {self.showExperienceScreen = true}
+        .sheet(isPresented: $showExperienceScreen, content: {
+            ExperienceScreen(viewModel: ExperienceViewModel(placeCardModel: viewModel.placeCardModel), showSheet: $showExperienceScreen)
+        })
     }
     
     var nameWithlikeCount: some View {
         HStack(alignment: .center) {
-            Text(placeCardModel.name)
+            Text(viewModel.placeCardModel.name)
                 .font(.custom(AppFont.bold.name, size: Dimensions.d14))
+            
             Spacer()
+            
             HStack {
-                Image(.like)
-                Text("\(placeCardModel.likeCount)")
+                Button {
+                    viewModel.likeExperiences()
+                } label: {
+                    if viewModel.placeCardModel.isliked {
+                        Image(.like)
+                    } else {
+                        Image(.dislike)
+                    }
+                }.disabled(viewModel.placeCardModel.isliked)
+                
+                Text("\(viewModel.placeCardModel.likeCount)")
                     .font(.custom(AppFont.medium.name, size: Dimensions.d14))
             }
         }
@@ -49,7 +75,7 @@ struct PlaceCardView: View {
     var overlayItems: some View {
         VStack {
             HStack(alignment: .top) {
-                if placeCardModel.isRecommended {
+                if viewModel.placeCardModel.isRecommended {
                     HStack{
                         Image(.favorite)
                         Text("RECOMMENDED")
@@ -77,7 +103,7 @@ struct PlaceCardView: View {
             HStack(alignment: .bottom) {
                 HStack(spacing: Dimensions.d6){
                     Image(.eye)
-                    Text("\(placeCardModel.seenNumber)")
+                    Text("\(viewModel.placeCardModel.seenNumber)")
                         .foregroundStyle(.white)
                         .font(.custom(AppFont.medium.name, size: Dimensions.d14))
                 }
@@ -96,5 +122,5 @@ struct PlaceCardView: View {
 }
 
 #Preview {
-    PlaceCardView(placeCardModel: PlaceCardModel(id: "1", name: "Nubian House", image: "", seenNumber: 333, likeCount: 234))
+    PlaceCardView(placeCardModel: PlaceCardModel(id: "1", name: "Nubian House", image: "", seenNumber: 333, likeCount: 234, address: "Aswan, Egypt.", description: ""))
 }

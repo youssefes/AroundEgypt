@@ -9,12 +9,13 @@ import SwiftUI
 
 struct SearchNavigationBarView: View {
     @Binding var searchText: String
+    var performSearch: (() -> Void)
     var body: some View {
         HStack(spacing: Dimensions.d15) {
             Image(.menu)
                 .resizable()
                 .frame(width: Dimensions.d18, height: Dimensions.d12)
-            SearchBarWithIcon(searchText: $searchText, placholder: "Try “Luxor”")
+            SearchBarWithIcon(searchText: $searchText, placholder: "Try “Luxor”", performSearch: performSearch)
             Image(.filter)
                 .resizable()
                 .frame(width: Dimensions.d18, height: Dimensions.d12)
@@ -23,5 +24,7 @@ struct SearchNavigationBarView: View {
 }
 
 #Preview {
-    SearchNavigationBarView(searchText: .constant(""))
+    SearchNavigationBarView(searchText: .constant(""), performSearch: {
+        
+    })
 }

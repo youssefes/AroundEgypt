@@ -1,6 +1,6 @@
 
 import Foundation
-struct RecommendedExperiencesData : Codable {
+struct ExperiencesData : Codable {
 	let id : String?
 	let title : String?
 	let coverPhoto : String?
@@ -8,9 +8,10 @@ struct RecommendedExperiencesData : Codable {
 	let viewsNo : Int?
 	let likesNo : Int?
 	let recommended : Int?
-	let isLiked : String?
+    let isLiked : Int?
 	let reviews : [Reviews]?
 	let reviewsNo : Int?
+    let address: String?
 
     enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -23,5 +24,20 @@ struct RecommendedExperiencesData : Codable {
         case isLiked = "is_liked"
         case reviews = "reviews"
         case reviewsNo = "reviews_no"
+        case address = "address"
+    }
+    
+    func mapToPlaceCardModel() -> PlaceCardModel {
+        return PlaceCardModel(
+            id: self.id ?? "",
+            name: self.title ?? "",
+            image: self.coverPhoto ?? "",
+            seenNumber: self.viewsNo ?? 0,
+            likeCount: self.likesNo ?? 0,
+            isRecommended: (self.recommended ?? 0) == 1,
+            isliked: (self.isLiked ?? 0) == 1,
+            address: self.address ?? "",
+            description: self.description ?? ""
+        )
     }
 }

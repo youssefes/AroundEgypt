@@ -10,6 +10,7 @@ import SwiftUI
 struct SearchBarWithIcon: View {
     @Binding var searchText: String
     var placholder: String
+    var performSearch: (() -> Void)
     var body: some View {
         HStack {
             Image(systemName: "magnifyingglass")
@@ -19,6 +20,10 @@ struct SearchBarWithIcon: View {
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .font(.custom(AppFont.light.name, size: Dimensions.d17))
+                .submitLabel(.search) // This changes the keyboard return key to "Search"
+                .onSubmit {
+                    performSearch()
+                }
             if !searchText.isEmpty {
                 Button(action: { searchText = "" }) {
                     Image(systemName: "xmark.circle.fill")
@@ -33,5 +38,7 @@ struct SearchBarWithIcon: View {
 }
 
 #Preview {
-    SearchBarWithIcon(searchText: .constant(""), placholder: "Try “Luxor”")
+    SearchBarWithIcon(searchText: .constant(""), placholder: "Try “Luxor”", performSearch: {
+        
+    })
 }

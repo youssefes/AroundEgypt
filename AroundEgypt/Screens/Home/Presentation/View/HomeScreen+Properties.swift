@@ -25,7 +25,6 @@ extension HomeScreen {
                 LazyHStack(spacing: Dimensions.d16) {
                     ForEach(viewModel.recommendedExperiencesItems, id: \.id) { item in
                         PlaceCardView(placeCardModel: item,width: UIScreen.screenWidth * 0.80)
-                        
                     }
                 }
                 .padding(.vertical,Dimensions.d10)
@@ -43,5 +42,17 @@ extension HomeScreen {
                 PlaceCardView(placeCardModel: item)
             }
         }
+    }
+    
+    var listOfSearch: some View {
+        List(viewModel.searchItems, id: \.id) { item in
+            PlaceCardView(placeCardModel: item)
+            .padding(.vertical, Dimensions.d8)
+            .listRowInsets(EdgeInsets())
+            .listRowSeparator(.hidden)
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .padding(.top, Dimensions.d8)
     }
 }
