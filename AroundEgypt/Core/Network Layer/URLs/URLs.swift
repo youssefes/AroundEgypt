@@ -3,6 +3,6 @@
 import Foundation
 class APIUrls {
     // MARK: -  aroundegypt.com
-    static let baseDomain = "aroundegypt.34ml.com"
-    static let getRecommendedExperiences = "/api/v2/experiences"
+    static let baseDomain = "https://aroundegypt.34ml.com"
+    static let getExperiences = "/api/v2/experiences"
 }

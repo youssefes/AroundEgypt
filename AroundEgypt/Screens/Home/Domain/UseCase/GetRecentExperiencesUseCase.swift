@@ -7,14 +7,20 @@
 
 import Foundation
 import Combine
-class GetRecentExperiencesUseCase: BaseUseCase {
-    override func process<T: Codable>(_ outputType: T.Type) -> Future<T, Error> {
-        return perfrom(outputType)
-    }
 
-    private func perfrom<T: Codable>(_ outputType: T.Type) -> Future<T, Error> {
-        let request = GetRecentExperiencesRequest()
-        return perform(apiRequest: request)
-    }
+protocol GetRecentExperiencesUseCaseProtocol {
+    func fetchRecentExperiences() async throws -> BaseModel<[ExperiencesData]>
+}
 
+class GetRecentExperiencesUseCase: GetRecentExperiencesUseCaseProtocol {
+    
+    var repository: RecentExperiencesRepositoryProtocol
+    init(repository: RecentExperiencesRepositoryProtocol = RecentExperiencesRepository()) {
+        self.repository = repository
+    }
+    
+    func fetchRecentExperiences() async throws -> BaseModel<[ExperiencesData]> {
+        return try await repository.fetchRecentExperiences()
+    }
+    
 }

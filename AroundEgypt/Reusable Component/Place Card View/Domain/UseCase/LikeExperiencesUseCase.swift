@@ -7,18 +7,22 @@
 
 import Foundation
 import Combine
-class LikeExperiencesUseCase: BaseUseCase {
-    var id: String
-    init(id: String) {
-        self.id = id
-    }
-    override func process<T: Codable>(_ outputType: T.Type) -> Future<T, Error> {
-        return perfrom(outputType)
-    }
 
-    private func perfrom<T: Codable>(_ outputType: T.Type) -> Future<T, Error> {
-        let request = LikeExperiencesRequest(id: id)
-        return perform(apiRequest: request)
+protocol LikeExperiencesUseCaseProtocol{
+    func likeExperiences() async throws -> BaseModel<Int>
+}
+
+class LikeExperiencesUseCase: LikeExperiencesUseCaseProtocol {
+    var id: String
+    var repository: LikeExperiencesRepositoryProtocol
+    
+    init(id: String, repository: LikeExperiencesRepositoryProtocol?  = nil) {
+        self.id = id
+        self.repository = repository ?? LikeExperiencesRepository(id: id)
+    }
+    
+    func likeExperiences() async throws -> BaseModel<Int>{
+        return try await repository.likeExperiences()
     }
 
 }

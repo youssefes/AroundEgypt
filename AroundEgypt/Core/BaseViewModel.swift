@@ -8,7 +8,7 @@ import Combine
 
 class BaseViewModel: DisposeObject {
     // MARK: - PROPERTIES
-    @Published var state: ViewModelState<BaseError> = .idle
+    @Published var state:  ViewModelState<NetworkError> = .idle
     
     deinit {
         self.cancellables.removeAll()

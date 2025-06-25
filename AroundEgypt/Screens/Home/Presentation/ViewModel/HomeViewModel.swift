@@ -14,108 +14,73 @@ class HomeViewModel: BaseViewModel, ObservableObject {
     @Published var mostRecent: [PlaceCardModel] = []
     @Published var searchItems: [PlaceCardModel] = []
     
-    private var getRecommendedExperiencesUseCase: GetRecommendedExperiencesUseCase
-    private var getRecentExperiencesUseCase: GetRecentExperiencesUseCase
-    private var searchExperiencesUseCase: SearchExperiencesUseCase?
+    private var getRecommendedExperiencesUseCase: GetRecommendedExperiencesUseCaseprotocol
+    private var getRecentExperiencesUseCase: GetRecentExperiencesUseCaseProtocol
+    private var searchExperiencesUseCase: SearchExperiencesUseCaseProtocol?
     init(
-        getRecommendedExperiencesUseCase: GetRecommendedExperiencesUseCase = GetRecommendedExperiencesUseCase(),
-        getRecentExperiencesUseCase: GetRecentExperiencesUseCase = GetRecentExperiencesUseCase(),
-        searchExperiencesUseCase: SearchExperiencesUseCase? =  nil
+        getRecommendedExperiencesUseCase: GetRecommendedExperiencesUseCaseprotocol = GetRecommendedExperiencesUseCase(),
+        getRecentExperiencesUseCase: GetRecentExperiencesUseCaseProtocol = GetRecentExperiencesUseCase(),
+        searchExperiencesUseCase: SearchExperiencesUseCaseProtocol? =  nil
     ) {
         self.getRecommendedExperiencesUseCase = getRecommendedExperiencesUseCase
         self.getRecentExperiencesUseCase = getRecentExperiencesUseCase
-        self.searchExperiencesUseCase = searchExperiencesUseCase
+        self.searchExperiencesUseCase =  searchExperiencesUseCase
         super.init()
     }
     
     // MARK: - get  Recommended Experiences
     func getRecommendedExperiences() {
-        getRecommendedExperiencesUseCase.willProcess = { [weak self] in
-            guard let self = self else {return}
-            self.state = .loading()
-        }
-        getRecommendedExperiencesUseCase.execute(BaseModel<[ExperiencesData]>.self)
-            .receive(on: RunLoop.main)
-            .sink { [weak self] complition in
-                guard let self = self  else {return}
+        self.state = .loading()
+        Task { @MainActor in
+            do {
+                let experiences = try await self.getRecommendedExperiencesUseCase.fetchRecommendedExperiences()
+                self.recommendedExperiencesItems = (experiences.data ?? []) .map({$0.mapToPlaceCardModel()})
                 self.state = .successful
-                switch complition {
-                case .finished:
-                    print("finish")
-                case .failure(let error):
-                    self.state = .failed(.requestFailed(error: error))
-                }
-            } receiveValue: {[weak self]  resulte in
-                guard let self = self else {return}
-                
-                if (resulte.meta.code ?? 0) == 200 {
-                    self.recommendedExperiencesItems =  resulte.data?.map({$0.mapToPlaceCardModel()}) ?? []
+            } catch {
+                if let networkError = error as? NetworkError {
+                    state = .failed(networkError)
                 } else {
-                    self.state = .failed(.server(statusCode: (resulte.meta.code ?? 0), data: nil))
+                    state = .failed(NetworkError.requestFailed(error))
                 }
-                
-            }.store(in: &cancellables)
+            }
+        }
     }
     
     
     // MARK: - get  Recent Experiences
     func getRecentexperiences() {
-        getRecentExperiencesUseCase.willProcess = { [weak self] in
-            guard let self = self else {return}
-            self.state = .loading()
-        }
-        getRecentExperiencesUseCase.execute(BaseModel<[ExperiencesData]>.self)
-            .receive(on: RunLoop.main)
-            .sink { [weak self] complition in
-                guard let self = self  else {return}
+        self.state = .loading()
+        Task { @MainActor in
+            do {
+                let experiences = try await getRecentExperiencesUseCase.fetchRecentExperiences()
+                self.mostRecent = (experiences.data ?? []).map({$0.mapToPlaceCardModel()})
                 self.state = .successful
-                switch complition {
-                case .finished:
-                    print("finish")
-                case .failure(let error):
-                    self.state = .failed(.requestFailed(error: error))
-                }
-            } receiveValue: {[weak self]  resulte in
-                guard let self = self else {return}
-                
-                if (resulte.meta.code ?? 0) == 200 {
-                    self.mostRecent =  resulte.data?.map({$0.mapToPlaceCardModel()}) ?? []
+            } catch {
+                if let networkError = error as? NetworkError {
+                    state = .failed(networkError)
                 } else {
-                    self.state = .failed(.server(statusCode: (resulte.meta.code ?? 0), data: nil))
+                    state = .failed(NetworkError.requestFailed(error))
                 }
-                
-            }.store(in: &cancellables)
+            }
+        }
     }
     
     // MARK: - search Experiences
     func searchExperiences() {
         if searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {return}
         searchExperiencesUseCase = SearchExperiencesUseCase(searchText: searchText)
-        searchExperiencesUseCase?.willProcess = { [weak self] in
-            guard let self = self else {return}
-            self.state = .loading()
-        }
-        searchExperiencesUseCase?.execute(BaseModel<[ExperiencesData]>.self)
-            .receive(on: RunLoop.main)
-            .sink { [weak self] complition in
-                guard let self = self  else {return}
-                
+        Task { @MainActor in
+            do {
+                let experiences = try await searchExperiencesUseCase?.searchExperiences()
+                self.searchItems = (experiences?.data ?? []).map({$0.mapToPlaceCardModel()})
                 self.state = .successful
-                switch complition {
-                case .finished:
-                    print("finish")
-                case .failure(let error):
-                    self.state = .failed(.requestFailed(error: error))
-                }
-            } receiveValue: {[weak self]  resulte in
-                guard let self = self else {return}
-                
-                if (resulte.meta.code ?? 0) == 200 {
-                    self.searchItems =  resulte.data?.map({$0.mapToPlaceCardModel()}) ?? []
+            } catch {
+                if let networkError = error as? NetworkError {
+                    state = .failed(networkError)
                 } else {
-                    self.state = .failed(.server(statusCode: (resulte.meta.code ?? 0), data: nil))
+                    state = .failed(NetworkError.requestFailed(error))
                 }
-                
-            }.store(in: &cancellables)
+            }
+        }
     }
 }

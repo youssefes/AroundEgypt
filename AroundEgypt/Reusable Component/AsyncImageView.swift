@@ -23,18 +23,6 @@ public struct AsyncImageView: View {
         self.contentMode = contentMode
     }
     
-    public init(
-        url: String?,
-        placeholder: Image? = nil,
-        loadingView: AnyView? = nil,
-        contentMode: SwiftUI.ContentMode = .fill,
-        isLoaded: Binding<Bool> = .constant(false)
-    ) {
-        self.url = URL(string: url ?? "")
-        self.placeholder = placeholder
-        self.contentMode = contentMode
-    }
-    
     public var body: some View {
         ZStack(alignment: .center) {
             kingFisherImageView

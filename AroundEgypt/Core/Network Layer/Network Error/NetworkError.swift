@@ -1,0 +1,36 @@
+//
+//  NetworkError.swift
+//  AroundEgypt
+//
+//  Created by Asset's Macbook Pro on 25/06/2025.
+//
+
+import Foundation
+
+// MARK: - Network Error
+public enum NetworkError: Error, LocalizedError {
+    case invalidURL
+    case requestFailed(Error)
+    case invalidResponse
+    case statusCode(Int)
+    case decodingError(Error)
+    case encodingError(Error)
+    
+    public var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return "Invalid URL"
+        case .requestFailed(let error):
+            return "Request failed: \(error.localizedDescription)"
+        case .invalidResponse:
+            return "Invalid response"
+        case .statusCode(let code):
+            return "Unexpected status code: \(code)"
+        case .decodingError(let error):
+            return "Decoding failed: \(error.localizedDescription)"
+        case .encodingError(let error):
+            return "Encoding failed: \(error.localizedDescription)"
+        }
+    }
+}
+

@@ -7,18 +7,22 @@
 
 import Foundation
 import Combine
-class SearchExperiencesUseCase: BaseUseCase {
+
+protocol SearchExperiencesUseCaseProtocol {
+    func searchExperiences() async throws -> BaseModel<[ExperiencesData]>
+}
+
+class SearchExperiencesUseCase: SearchExperiencesUseCaseProtocol {
     var searchText: String
-    init(searchText: String) {
+    let repository: SearchExperiencesRepositoryProtocol?
+    
+    init(searchText: String, repository: SearchExperiencesRepositoryProtocol? = nil) {
         self.searchText = searchText
+        self.repository = repository ?? SearchExperiencesRepository(searchText: self.searchText)
     }
-    override func process<T: Codable>(_ outputType: T.Type) -> Future<T, Error> {
-        return perfrom(outputType)
+    
+    func searchExperiences() async throws -> BaseModel<[ExperiencesData]> {
+        return try await repository?.searchExperiences() ??  BaseModel<[ExperiencesData]>(meta: Meta(code: 0, errors: []), data: [])
     }
-
-    private func perfrom<T: Codable>(_ outputType: T.Type) -> Future<T, Error> {
-        let request = SearchExperiencesRequest(searchText: searchText)
-        return perform(apiRequest: request)
-    }
-
+    
 }

@@ -7,14 +7,19 @@
 
 import Foundation
 import Combine
-class GetRecommendedExperiencesUseCase: BaseUseCase {
-    override func process<T: Codable>(_ outputType: T.Type) -> Future<T, Error> {
-        return perfrom(outputType)
-    }
+protocol GetRecommendedExperiencesUseCaseprotocol {
+    func fetchRecommendedExperiences() async throws -> BaseModel<[ExperiencesData]>
+}
 
-    private func perfrom<T: Codable>(_ outputType: T.Type) -> Future<T, Error> {
-        let request = GetRecommendedExperiencesRequest()
-        return perform(apiRequest: request)
-    }
+class GetRecommendedExperiencesUseCase: GetRecommendedExperiencesUseCaseprotocol {
 
+    let repository: RecommendedExperiencesRepositoryProtocol
+    
+    init(repository: RecommendedExperiencesRepositoryProtocol =  RecommendedExperiencesRepository()) {
+        self.repository = repository
+    }
+    
+    func fetchRecommendedExperiences() async throws -> BaseModel<[ExperiencesData]> {
+        return try await repository.fetchRecommendedExperiences()
+    }
 }
