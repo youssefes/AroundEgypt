@@ -39,7 +39,7 @@ final class RecentExperiencesLocal: ExperiencesLocalProtocol {
         // Add new data
         for exp in experiences {
             let request: NSFetchRequest<ExperienceEntity> = ExperienceEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %d", exp.id)
+            request.predicate = NSPredicate(format: "id == %@", exp.id)
             request.fetchLimit = 1
             if (try context.fetch(request).first) == nil {
                 let entity = ExperienceEntity(context: context)
@@ -69,7 +69,7 @@ final class RecentExperiencesLocal: ExperiencesLocalProtocol {
 
     func updateExperiences(experience: ExperiencesData) throws {
         let request: NSFetchRequest<ExperienceEntity> = ExperienceEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %d", experience.id)
+        request.predicate = NSPredicate(format: "id == %@", experience.id)
         request.fetchLimit = 1
 
         if let entity = try context.fetch(request).first {

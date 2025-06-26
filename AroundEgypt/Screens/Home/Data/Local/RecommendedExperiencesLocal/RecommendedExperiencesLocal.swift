@@ -25,15 +25,10 @@ final class RecommendedExperiencesLocal: ExperiencesLocalProtocol {
     }
     
     func save(experiences: [ExperiencesData]) throws {
-        // Remove old data if needed
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = RecommendedExperienceEntity.fetchRequest()
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        try context.execute(deleteRequest)
-
         // Add new data
         for exp in experiences {
             let request: NSFetchRequest<RecommendedExperienceEntity> = RecommendedExperienceEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %d", exp.id)
+            request.predicate = NSPredicate(format: "id == %@", exp.id)
             if (try context.fetch(request).first) == nil {
                 let entity = RecommendedExperienceEntity(context: context)
                 entity.id = exp.id
@@ -63,7 +58,7 @@ final class RecommendedExperiencesLocal: ExperiencesLocalProtocol {
     
     func updateExperiences(experience: ExperiencesData) throws {
         let request: NSFetchRequest<RecommendedExperienceEntity> = RecommendedExperienceEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %d", experience.id)
+        request.predicate = NSPredicate(format: "id == %@", experience.id)
         request.fetchLimit = 1
 
         if let entity = try context.fetch(request).first {

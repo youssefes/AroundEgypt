@@ -21,26 +21,27 @@ struct PlaceCardModel {
 
 struct PlaceCardView: View {
     var placeCardModel: PlaceCardModel
-    var width: CGFloat?
     @State var showExperienceScreen: Bool = false
     @StateObject var viewModel: PlaceCardViewModel
-    init(placeCardModel: PlaceCardModel, width: CGFloat? = nil) {
+    init(placeCardModel: PlaceCardModel) {
         self.placeCardModel = placeCardModel
-        self.width = width
         _viewModel = StateObject(wrappedValue: PlaceCardViewModel(placeCardModel: placeCardModel))
     }
     
     var body: some View {
         VStack(spacing: Dimensions.d16) {
             AsyncImageView(url: URL(string: viewModel.placeCardModel.image))
-                .frame(width: width,height: Dimensions.d155)
-                .frame(maxWidth: width ?? .infinity)
+                .frame(height: Dimensions.d155)
                 .cornerRadius(Dimensions.d7)
                 .overlay {
                     overlayItems
+                        .frame(height: Dimensions.d155)
                 }
-            
             nameWithlikeCount
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            self.showExperienceScreen = true
         }
         .onTapGesture {self.showExperienceScreen = true}
         .sheet(isPresented: $showExperienceScreen, content: {
@@ -64,7 +65,9 @@ struct PlaceCardView: View {
                     } else {
                         Image(.dislike)
                     }
-                }.disabled(viewModel.placeCardModel.isliked)
+                }
+                .buttonStyle(.plain)
+                .disabled(viewModel.placeCardModel.isliked)
                 
                 Text("\(viewModel.placeCardModel.likeCount)")
                     .font(.custom(AppFont.medium.name, size: Dimensions.d14))
