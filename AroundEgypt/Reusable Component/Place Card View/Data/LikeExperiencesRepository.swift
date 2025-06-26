@@ -21,6 +21,7 @@ class LikeExperiencesRepository: LikeExperiencesRepositoryProtocol{
     
     func likeExperiences() async throws -> BaseModel<Int>{
         let likeExperiencesEndpoint = Endpoint(path: APIUrls.getExperiences + "/\(id)/like", method: .POST)
+        print(likeExperiencesEndpoint.path)
         return try await service.request(likeExperiencesEndpoint, responseType: BaseModel<Int>.self)
     }
 }

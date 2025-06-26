@@ -4,10 +4,10 @@
 <dict>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Gotham-Bold.ttf</string>
-		<string>Gotham-Light.ttf</string>
-		<string>Gotham-Medium.ttf</string>
-		<string>GothamRnd-Bold.ttf</string>
+        <string>Gotham-Bold.ttf</string>
+        <string>Gotham-Medium.ttf</string>
+        <string>Gotham-Light.ttf</string>
+        <string>GothamRnd-Bold.ttf</string>
 	</array>
 </dict>
 </plist>

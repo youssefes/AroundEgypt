@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 protocol GetRecommendedExperiencesUseCaseprotocol {
-    func fetchRecommendedExperiences() async throws -> BaseModel<[ExperiencesData]>
+    func fetchRecommendedExperiences() async throws -> [ExperiencesData]
 }
 
 class GetRecommendedExperiencesUseCase: GetRecommendedExperiencesUseCaseprotocol {
@@ -19,7 +19,7 @@ class GetRecommendedExperiencesUseCase: GetRecommendedExperiencesUseCaseprotocol
         self.repository = repository
     }
     
-    func fetchRecommendedExperiences() async throws -> BaseModel<[ExperiencesData]> {
+    func fetchRecommendedExperiences() async throws -> [ExperiencesData] {
         return try await repository.fetchRecommendedExperiences()
     }
 }

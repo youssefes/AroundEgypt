@@ -34,9 +34,10 @@ class HomeViewModel: BaseViewModel, ObservableObject {
         Task { @MainActor in
             do {
                 let experiences = try await self.getRecommendedExperiencesUseCase.fetchRecommendedExperiences()
-                self.recommendedExperiencesItems = (experiences.data ?? []) .map({$0.mapToPlaceCardModel()})
+                self.recommendedExperiencesItems = experiences.map({$0.mapToPlaceCardModel()})
                 self.state = .successful
             } catch {
+                print(error)
                 if let networkError = error as? NetworkError {
                     state = .failed(networkError)
                 } else {
@@ -53,9 +54,10 @@ class HomeViewModel: BaseViewModel, ObservableObject {
         Task { @MainActor in
             do {
                 let experiences = try await getRecentExperiencesUseCase.fetchRecentExperiences()
-                self.mostRecent = (experiences.data ?? []).map({$0.mapToPlaceCardModel()})
+                self.mostRecent = (experiences).map({$0.mapToPlaceCardModel()})
                 self.state = .successful
             } catch {
+                print(error)
                 if let networkError = error as? NetworkError {
                     state = .failed(networkError)
                 } else {
@@ -68,6 +70,7 @@ class HomeViewModel: BaseViewModel, ObservableObject {
     // MARK: - search Experiences
     func searchExperiences() {
         if searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {return}
+        self.state = .loading()
         searchExperiencesUseCase = SearchExperiencesUseCase(searchText: searchText)
         Task { @MainActor in
             do {

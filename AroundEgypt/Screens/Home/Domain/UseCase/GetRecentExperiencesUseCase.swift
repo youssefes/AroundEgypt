@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 protocol GetRecentExperiencesUseCaseProtocol {
-    func fetchRecentExperiences() async throws -> BaseModel<[ExperiencesData]>
+    func fetchRecentExperiences() async throws -> [ExperiencesData]
 }
 
 class GetRecentExperiencesUseCase: GetRecentExperiencesUseCaseProtocol {
@@ -19,7 +19,7 @@ class GetRecentExperiencesUseCase: GetRecentExperiencesUseCaseProtocol {
         self.repository = repository
     }
     
-    func fetchRecentExperiences() async throws -> BaseModel<[ExperiencesData]> {
+    func fetchRecentExperiences() async throws -> [ExperiencesData] {
         return try await repository.fetchRecentExperiences()
     }
     
