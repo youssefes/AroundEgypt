@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - Network Error
-public enum NetworkError: Error, LocalizedError {
+public enum NetworkError: Error,Equatable, LocalizedError {
     case invalidURL
     case requestFailed(Error)
     case invalidResponse
@@ -31,6 +31,12 @@ public enum NetworkError: Error, LocalizedError {
         case .encodingError(let error):
             return "Encoding failed: \(error.localizedDescription)"
         }
+    }
+}
+
+extension NetworkError {
+    public static func == (lhs: NetworkError, rhs: NetworkError) -> Bool {
+        lhs.errorDescription == rhs.errorDescription // or compare all fields
     }
 }
 

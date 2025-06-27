@@ -10,6 +10,7 @@ import Combine
 
 protocol SearchExperiencesUseCaseProtocol {
     func searchExperiences() async throws -> BaseModel<[ExperiencesData]>
+    func setSearchText(searchText: String)
 }
 
 class SearchExperiencesUseCase: SearchExperiencesUseCaseProtocol {
@@ -19,6 +20,10 @@ class SearchExperiencesUseCase: SearchExperiencesUseCaseProtocol {
     init(searchText: String, repository: SearchExperiencesRepositoryProtocol? = nil) {
         self.searchText = searchText
         self.repository = repository ?? SearchExperiencesRepository(searchText: self.searchText)
+    }
+    
+    func setSearchText(searchText: String) {
+        self.searchText = searchText
     }
     
     func searchExperiences() async throws -> BaseModel<[ExperiencesData]> {

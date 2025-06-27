@@ -13,13 +13,13 @@ protocol GetRecommendedExperiencesUseCaseprotocol {
 
 class GetRecommendedExperiencesUseCase: GetRecommendedExperiencesUseCaseprotocol {
 
-    let repository: RecommendedExperiencesRepositoryProtocol
+    let repository: GetExperiencesRepositoryProtocol
     
-    init(repository: RecommendedExperiencesRepositoryProtocol =  RecommendedExperiencesRepository()) {
+    init(repository: GetExperiencesRepositoryProtocol =  RecommendedExperiencesRepository()) {
         self.repository = repository
     }
     
     func fetchRecommendedExperiences() async throws -> [ExperiencesData] {
-        return try await repository.fetchRecommendedExperiences()
+        return try await repository.fetchExperiences()
     }
 }

@@ -14,12 +14,11 @@ class ExperienceViewModel: BaseViewModel, ObservableObject {
     private var likeExperiencesUseCase: LikeExperiencesUseCaseProtocol?
     init(placeCardModel: PlaceCardModel,likeExperiencesUseCase: LikeExperiencesUseCaseProtocol? = nil) {
         self.placeCardModel = placeCardModel
-        self.likeExperiencesUseCase = likeExperiencesUseCase
+        self.likeExperiencesUseCase = likeExperiencesUseCase ?? LikeExperiencesUseCase(id: placeCardModel.id)
     }
     
     // MARK: - Like Experiences
     func likeExperiences() {
-        likeExperiencesUseCase = LikeExperiencesUseCase(id: placeCardModel.id)
         Task { @MainActor in 
             do {
                 let resulte = try await self.likeExperiencesUseCase?.likeExperiences()

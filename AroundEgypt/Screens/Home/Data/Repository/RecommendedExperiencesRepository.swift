@@ -5,11 +5,8 @@
 //  Created by Asset's Macbook Pro on 25/06/2025.
 //
 import Foundation
-protocol RecommendedExperiencesRepositoryProtocol {
-    func fetchRecommendedExperiences() async throws -> [ExperiencesData]
-}
 
-class RecommendedExperiencesRepository: RecommendedExperiencesRepositoryProtocol {
+class RecommendedExperiencesRepository: GetExperiencesRepositoryProtocol {
     let service: NetworkService
     let experiencesLocal: ExperiencesLocalProtocol
     
@@ -21,7 +18,7 @@ class RecommendedExperiencesRepository: RecommendedExperiencesRepositoryProtocol
         self.experiencesLocal = experiencesLocal
     }
     
-    func fetchRecommendedExperiences() async throws -> [ExperiencesData] {
+    func fetchExperiences() async throws -> [ExperiencesData] {
         let cached = try experiencesLocal.loadExperiences()
         if !cached.isEmpty {
             Task { try? await fetchAndRefreshIfNeeded(existing: cached) }

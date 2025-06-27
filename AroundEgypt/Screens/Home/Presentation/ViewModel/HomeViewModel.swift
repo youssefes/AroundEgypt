@@ -16,11 +16,11 @@ class HomeViewModel: BaseViewModel, ObservableObject {
     
     private var getRecommendedExperiencesUseCase: GetRecommendedExperiencesUseCaseprotocol
     private var getRecentExperiencesUseCase: GetRecentExperiencesUseCaseProtocol
-    private var searchExperiencesUseCase: SearchExperiencesUseCaseProtocol?
+    private var searchExperiencesUseCase: SearchExperiencesUseCaseProtocol
     init(
         getRecommendedExperiencesUseCase: GetRecommendedExperiencesUseCaseprotocol = GetRecommendedExperiencesUseCase(),
         getRecentExperiencesUseCase: GetRecentExperiencesUseCaseProtocol = GetRecentExperiencesUseCase(),
-        searchExperiencesUseCase: SearchExperiencesUseCaseProtocol? =  nil
+        searchExperiencesUseCase: SearchExperiencesUseCaseProtocol = SearchExperiencesUseCase(searchText: "")
     ) {
         self.getRecommendedExperiencesUseCase = getRecommendedExperiencesUseCase
         self.getRecentExperiencesUseCase = getRecentExperiencesUseCase
@@ -71,11 +71,11 @@ class HomeViewModel: BaseViewModel, ObservableObject {
     func searchExperiences() {
         if searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {return}
         self.state = .loading()
-        searchExperiencesUseCase = SearchExperiencesUseCase(searchText: searchText)
+        searchExperiencesUseCase.setSearchText(searchText: searchText)
         Task { @MainActor in
             do {
-                let experiences = try await searchExperiencesUseCase?.searchExperiences()
-                self.searchItems = (experiences?.data ?? []).map({$0.mapToPlaceCardModel()})
+                let experiences = try await searchExperiencesUseCase.searchExperiences()
+                self.searchItems = (experiences.data ?? []).map({$0.mapToPlaceCardModel()})
                 self.state = .successful
             } catch {
                 if let networkError = error as? NetworkError {

@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import Foundation
-import Combine
 
 class PlaceCardViewModel: BaseViewModel, ObservableObject {
     
@@ -15,14 +13,13 @@ class PlaceCardViewModel: BaseViewModel, ObservableObject {
     private var likeExperiencesUseCase: LikeExperiencesUseCaseProtocol?
     private var experiencesLocal: ExperiencesLocalProtocol?
     init(placeCardModel: PlaceCardModel,likeExperiencesUseCase: LikeExperiencesUseCaseProtocol? = nil,experiencesLocal: ExperiencesLocalProtocol? = nil) {
-        self.likeExperiencesUseCase = likeExperiencesUseCase
         self.placeCardModel = placeCardModel
+        self.likeExperiencesUseCase = likeExperiencesUseCase ?? LikeExperiencesUseCase(id: placeCardModel.id)
         self.experiencesLocal = experiencesLocal
     }
     
     // MARK: - Like Experiences
     func likeExperiences() {
-        likeExperiencesUseCase = LikeExperiencesUseCase(id: placeCardModel.id)
         Task {  @MainActor [weak self] in
             guard let self else { return }
             do {

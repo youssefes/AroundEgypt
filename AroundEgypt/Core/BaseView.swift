@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public enum ViewModelState<Error> {
+public enum ViewModelState<Error>: Equatable {
     case idle
     case loading(message: String? = nil)
     case successful

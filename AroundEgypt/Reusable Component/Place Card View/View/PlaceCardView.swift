@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PlaceCardModel {
+struct PlaceCardModel: Equatable {
     var id: String
     var name: String
     var image: String

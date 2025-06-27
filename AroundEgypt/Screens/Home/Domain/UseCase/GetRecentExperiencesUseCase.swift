@@ -14,13 +14,13 @@ protocol GetRecentExperiencesUseCaseProtocol {
 
 class GetRecentExperiencesUseCase: GetRecentExperiencesUseCaseProtocol {
     
-    var repository: RecentExperiencesRepositoryProtocol
-    init(repository: RecentExperiencesRepositoryProtocol = RecentExperiencesRepository()) {
+    var repository: GetExperiencesRepositoryProtocol
+    init(repository: GetExperiencesRepositoryProtocol = RecentExperiencesRepository()) {
         self.repository = repository
     }
     
     func fetchRecentExperiences() async throws -> [ExperiencesData] {
-        return try await repository.fetchRecentExperiences()
+        return try await repository.fetchExperiences()
     }
     
 }

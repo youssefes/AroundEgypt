@@ -6,11 +6,11 @@
 //
 import Foundation
 
-protocol RecentExperiencesRepositoryProtocol {
-    func fetchRecentExperiences() async throws -> [ExperiencesData]
+protocol GetExperiencesRepositoryProtocol {
+    func fetchExperiences() async throws -> [ExperiencesData]
 }
 
-class RecentExperiencesRepository: RecentExperiencesRepositoryProtocol{
+class RecentExperiencesRepository: GetExperiencesRepositoryProtocol{
     let experiencesLocal: ExperiencesLocalProtocol
     let service: NetworkService
     init(
@@ -21,7 +21,7 @@ class RecentExperiencesRepository: RecentExperiencesRepositoryProtocol{
         self.experiencesLocal = experiencesLocal
     }
     
-    func fetchRecentExperiences() async throws -> [ExperiencesData] {
+    func fetchExperiences() async throws -> [ExperiencesData] {
         let cached = try experiencesLocal.loadExperiences()
         if  !cached.isEmpty {
             Task { try? await fetchAndRefreshIfNeeded(existing: cached) }
